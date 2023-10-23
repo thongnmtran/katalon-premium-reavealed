@@ -9,7 +9,10 @@ import com.kms.katalon.core.annotation.Keyword
 import com.kms.katalon.core.configuration.RunConfiguration
 import com.kms.katalon.core.exception.KatalonRuntimeException
 import com.kms.katalon.core.logging.ErrorCollector
+import com.kms.katalon.core.logging.KeywordLogger
 import com.kms.katalon.core.main.ScriptEngine
+import com.kms.katalon.core.util.ConsoleCommandBuilder
+import com.kms.katalon.core.util.KeywordUtil
 
 import internal.GlobalVariable
 
@@ -35,29 +38,33 @@ public class SecuredProfile {
 
 		for (String profileI : profiles) {
 			String validProfilePath = loadProfile(profileI);
+			if (isExternalFile(profileI)) {
+				continue;
+			}
 			ignoreFile(validProfilePath);
 		}
 	}
 
 	@Keyword
 	def void ignoreFile(String filePath) {
-		File root = new File(getProjectFolder());
-		String relativePath = root.relativePath(new File(filePath));
-		if (relativePath.startsWith("..")) {
+		if (isExternalFile(filePath)) {
 			return;
 		}
 
-		File gitIgnoreFile = new File(root, ".gitignore");
+		File gitIgnoreFile = fileFromRelativePath(".gitignore");
 		Path gitIgnorePath = gitIgnoreFile.toPath();
 		String gitIgnoreContent = Files.readString(gitIgnorePath);
 		if (StringUtils.isBlank(gitIgnoreContent)) {
 			gitIgnoreContent = "";
 		}
 
+		String relativePath = getRelativePath(filePath);
 		String ignoreLine = "/" + relativePath;
 		if (StringUtils.contains(gitIgnoreContent, ignoreLine)) {
 			return;
 		}
+
+		removeFileFromGit(relativePath);
 
 		if (!gitIgnoreContent.endsWith("\n\n")) {
 			if (gitIgnoreContent.endsWith("\n")) {
@@ -69,6 +76,8 @@ public class SecuredProfile {
 		gitIgnoreContent += ignoreLine + "\n";
 
 		Files.writeString(gitIgnorePath, gitIgnoreContent);
+
+		addFileToGit(gitIgnorePath.toString());
 	}
 
 	@Keyword
@@ -82,11 +91,12 @@ public class SecuredProfile {
 	}
 
 	protected String findProfile(String profilePath) {
-		List<String> variants = Arrays.asList(
-				profilePath,
-				profilePath + ".glbl",
-				absolutePathFromRelativePath("./Profiles/" + profilePath),
-				absolutePathFromRelativePath("./Profiles/" + profilePath + ".glbl"));
+		List<String> variants = new ArrayList<String>(Arrays.asList(profilePath, profilePath + ".glbl"));
+		if (!new File(profilePath).isAbsolute()) {
+			variants.add(absolutePathFromRelativePath("./Profiles/" + profilePath));
+			variants.add(absolutePathFromRelativePath("./Profiles/" + profilePath + ".glbl"));
+		}
+
 		String validProfilePath = "";
 		for (String variantI : variants) {
 			if (new File(variantI).exists()) {
@@ -128,15 +138,60 @@ public class SecuredProfile {
 		}
 	}
 
-	def String absolutePathFromRelativePath(String relativePath) {
+	protected void addFileToGit(String filePath) {
+		if (isGitIntegrated()) {
+			try {
+				ConsoleCommandBuilder.create("git add \"" + filePath + "\"").execSync();
+			} catch (Exception error) {
+				KeywordLogger.getInstance(getClass()).logWarning("Unable to add the target file from your git repo. Please do it manually (\"${filePath}\")");
+			}
+		}
+	}
+
+	protected void removeFileFromGit(String filePath) {
+		if (isGitIntegrated()) {
+			try {
+				ConsoleCommandBuilder.create("git rm --cached \"" + filePath + "\"").execSync();
+			} catch (Exception error) {
+				KeywordLogger.getInstance(getClass()).logWarning("Unable to remove the target file from your git repo. Please do it manually (\"${filePath}\")");
+			}
+		}
+	}
+
+	protected boolean isExternalFile(String filePath) {
+		File root = new File(getProjectFolder());
+		String relativePath = root.relativePath(new File(filePath));
+		return relativePath.startsWith("..");
+	}
+
+	protected boolean isGitIntegrated() {
+		File root = fileFromRelativePath(".");
+		while (root != null && root.exists()) {
+			File gitFolder = new File(root, ".git");
+			if (gitFolder.exists()) {
+				return true;
+			}
+			root = root.getParentFile();
+		}
+		return false;
+	}
+
+	protected String getRelativePath(String filePath) {
+		return fileFromRelativePath(".").relativePath(new File(filePath));
+	}
+
+	protected String absolutePathFromRelativePath(String relativePath) {
+		if (new File(relativePath).isAbsolute()) {
+			return relativePath;
+		}
 		return fileFromRelativePath(relativePath).getCanonicalPath();
 	}
 
-	def File fileFromRelativePath(String relativePath) {
-		return new File(getProjectFolder(), relativePath);
+	protected File fileFromRelativePath(String relativePath) {
+		return new File(getProjectFolder(), relativePath).getCanonicalFile();
 	}
 
-	def String getProjectFolder() {
+	protected String getProjectFolder() {
 		return RunConfiguration.getProjectDir();
 	}
 }
