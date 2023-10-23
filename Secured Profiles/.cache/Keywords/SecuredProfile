@@ -1,5 +1,5 @@
 {
-  "keywordFileContentHash": "270781D131FFE514D6D2EB94815E412F",
+  "keywordFileContentHash": "00E8A2EEBCC1E4039A432A45C998C167",
   "keywordClasses": [
     {
       "name": "SecuredProfile",
@@ -29,8 +29,7 @@
                 "errorOnParsing": false
               }
             }
-          ],
-          "javadoc": ""
+          ]
         },
         {
           "name": "ignoreFile",
@@ -48,8 +47,7 @@
                 "errorOnParsing": false
               }
             }
-          ],
-          "javadoc": ""
+          ]
         },
         {
           "name": "loadProfile",
@@ -67,11 +65,10 @@
                 "errorOnParsing": false
               }
             }
-          ],
-          "javadoc": ""
+          ]
         }
       ]
     }
   ],
-  "javadocParsed": true
+  "javadocParsed": false
 }

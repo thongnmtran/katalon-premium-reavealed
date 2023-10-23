@@ -161,7 +161,7 @@ public class SecuredProfile {
 	protected boolean isExternalFile(String filePath) {
 		File root = new File(getProjectFolder());
 		String relativePath = root.relativePath(new File(filePath));
-		return relativePath.startsWith("..");
+		return new File(relativePath).isAbsolute() || relativePath.startsWith("..");
 	}
 
 	protected boolean isGitIntegrated() {
