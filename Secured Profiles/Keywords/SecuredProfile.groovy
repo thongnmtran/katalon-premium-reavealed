@@ -38,9 +38,6 @@ public class SecuredProfile {
 
 		for (String profileI : profiles) {
 			String validProfilePath = loadProfile(profileI);
-			if (isExternalFile(profileI)) {
-				continue;
-			}
 			ignoreFile(validProfilePath);
 		}
 	}
