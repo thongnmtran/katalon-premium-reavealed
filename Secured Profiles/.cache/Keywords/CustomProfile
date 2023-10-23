@@ -1,0 +1,30 @@
+{
+  "keywordFileContentHash": "04B6A93378ED63452B88E86DE1373A78",
+  "keywordClasses": [
+    {
+      "name": "CustomProfile",
+      "keywordMethods": [
+        {
+          "name": "loadProfile",
+          "parameters": [
+            {
+              "name": "profilePath",
+              "initialExpression": "",
+              "type": {
+                "fullClassName": "java.lang.String",
+                "unresolvedClassName": "String",
+                "isArray": false,
+                "isGnericsPlaceHolder": false,
+                "hasImmutableClassName": false,
+                "genericsTypes": [],
+                "errorOnParsing": false
+              }
+            }
+          ],
+          "javadoc": ""
+        }
+      ]
+    }
+  ],
+  "javadocParsed": true
+}
