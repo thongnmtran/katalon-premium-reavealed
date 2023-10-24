@@ -30,7 +30,7 @@ WebUI.click(findTestObject('Object Repository/Page_CURA Healthcare Service/a_Mak
 WebUI.setText(findTestObject('Object Repository/Page_CURA Healthcare Service/input_username'), GlobalVariable.username)
 
 WebUI.comment('The password here can be exposed if you push it to an online repository.');
-WebUI.setText(findTestObject('Object Repository/Page_CURA Healthcare Service/input_password'), GlobalVariable.encryptedPassword)
+WebUI.setText(findTestObject('Object Repository/Page_CURA Healthcare Service/input_password'), GlobalVariable.password)
 
 WebUI.click(findTestObject('Object Repository/Page_CURA Healthcare Service/button_Login'))
 
