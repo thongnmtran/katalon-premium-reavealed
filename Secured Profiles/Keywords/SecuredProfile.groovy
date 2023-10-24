@@ -174,7 +174,7 @@ public class SecuredProfile {
 	}
 
 	protected String getRelativePath(String filePath) {
-		return fileFromRelativePath(".").relativePath(new File(filePath));
+		return fileFromRelativePath(".").toURI().relativize(new File(filePath).toURI()).getPath();
 	}
 
 	protected String absolutePathFromRelativePath(String relativePath) {
