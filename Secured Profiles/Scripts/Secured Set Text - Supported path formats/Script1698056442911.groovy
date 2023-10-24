@@ -21,7 +21,7 @@ import org.openqa.selenium.Keys as Keys
 CustomKeywords.'SecuredProfile.defineSecuredProfiles'('secured_production_profile') // "./Profiles/secured_production_profile.glbl"
 CustomKeywords.'SecuredProfile.loadProfile'('secured_production_profile.glbl') // "./Profiles/secured_production_profile.glbl"
 CustomKeywords.'SecuredProfile.loadProfile'('Custom Folder/secured_production_profile') // "./Custom Folder/secured_production_profile.glbl"
-CustomKeywords.'SecuredProfile.loadProfile'('C:/Users/me/Desktop/secured_production_profile') // "C:/Users/me/Desktop/secured_production_profile"
+CustomKeywords.'SecuredProfile.loadProfile'('C:/Users/me/Desktop/secured_production_profile') // "C:/Users/me/Desktop/secured_production_profile.glbl"
 
 WebUI.openBrowser('')
 
