@@ -14,3 +14,5 @@ build
 .classpath
 
 .project
+
+/Profiles/secured_production_profile.glbl
